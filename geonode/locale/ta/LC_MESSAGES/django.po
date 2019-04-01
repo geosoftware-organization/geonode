@@ -3744,6 +3744,10 @@ msgstr "பகிர்தல் "
 msgid "Ratings"
 msgstr "தரப்படுத்தல் "
 
+#: geonode/templates/_actions.html:20
+msgid "GeoGig"
+msgstr "GeoGig"
+
 #: geonode/templates/_actions.html:23
 msgid "Exif"
 msgstr "வெளியேறல்"

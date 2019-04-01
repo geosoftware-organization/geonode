@@ -3,7 +3,7 @@
 	<div align="right">
 	<a href="http://travis-ci.org/GeoNode/geonode"><img src="https://secure.travis-ci.org/GeoNode/geonode.png"></a> <a href="https://codecov.io/gh/GeoNode/geonode"><img src="https://codecov.io/gh/GeoNode/geonode/branch/master/graph/badge.svg"></a> <a href="https://www.gnu.org/licenses/gpl-3.0.en.html"><img src="docs/img/gpl.png" alt="GPL badge"></a></div><img src="docs/img/geonode-logo_for_readme.gif" alt="GeoNode Logo" width="450px"/><div style="text-align:center"><hr><b>A powerful yet easy to use web-based application and platform for deploying spatial data infrastructures (SDI).</b><hr></div>
 
-	
+
 
 Table of Contents
 ----------------
@@ -40,6 +40,8 @@ It is also designed to be a flexible platform that software developers
 can extend, modify or integrate against to meet requirements in their
 own applications.
 
+Link: http://docs.geonode.org/en/master/tutorials/install_and_admin/running_docker/setup_docker_compose.html
+
 Try out GeoNode
 ---------------
 
@@ -57,7 +59,7 @@ Install
 
 GeoNode can be setup in different ways, flavors and plattforms. If
 you´re planning to do development or install for production please visit
-the offical GeoNode installation documentation: 
+the offical GeoNode installation documentation:
 
 - `Docker <http://docs.geonode.org/en/master/tutorials/install_and_admin/running_docker/index.html>`__
 - `VM Setup with VirtualBox <http://docs.geonode.org/en/master/tutorials/install_and_admin/vm_setup_virtualbox.html>`__

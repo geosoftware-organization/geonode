@@ -309,7 +309,17 @@ GEONODE_INTERNAL_APPS = (
 
 GEONODE_CONTRIB_APPS = (
     # GeoNode Contrib Apps
+    # 'geonode.contrib.dynamic',
+    # 'geonode.contrib.exif',
+    # 'geonode.contrib.favorite',
+    # 'geonode.contrib.geogig',
+    # 'geonode.contrib.geosites',
+    # 'geonode.contrib.nlp',
+    # 'geonode.contrib.slack',
+    # 'geonode.contrib.createlayer',
+    # 'geonode.contrib.datastore_shards',
     'geonode.contrib.metadataxsl',
+    'geonode.contrib.api_basemaps',
     'geonode.contrib.ows_api',
 )
 
@@ -473,6 +483,11 @@ integration_csw_tests = ast.literal_eval(os.environ.get('TEST_RUN_INTEGRATION_CS
 integration_bdd_tests = ast.literal_eval(os.environ.get('TEST_RUN_INTEGRATION_BDD', 'False'))
 selenium_tests = ast.literal_eval(os.environ.get('TEST_RUN_SELENIUM', 'False'))
 
+# Setting a custom test runner to avoid running the tests for
+# some problematic 3rd party apps
+# Default Nose Test Suite
+# TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
 # Django 1.11 ParallelTestSuite
 TEST_RUNNER = 'geonode.tests.suite.runner.GeoNodeBaseSuiteDiscoverRunner'
 TEST_RUNNER_KEEPDB = 0
@@ -488,6 +503,12 @@ TEST_RUNNER_PARALLEL = 1
 
 TEST = 'test' in sys.argv
 INTEGRATION = 'geonode.tests.integration' in sys.argv
+
+# Arguments for the test runner
+NOSE_ARGS = [
+    '--nocapture',
+    '--detailed-errors',
+]
 
 #
 # Customizations to built in Django settings required by GeoNode
@@ -791,6 +812,7 @@ OGC_SERVER = {
         'GEONODE_SECURITY_ENABLED': True,
         'GEOFENCE_SECURITY_ENABLED': GEOFENCE_SECURITY_ENABLED,
         'GEOFENCE_URL': os.getenv('GEOFENCE_URL', 'internal:/'),
+        'GEOGIG_ENABLED': False,
         'WMST_ENABLED': False,
         'BACKEND_WRITE_ENABLED': True,
         'WPS_ENABLED': True,
@@ -799,6 +821,7 @@ OGC_SERVER = {
         # Set to name of database in DATABASES dictionary to enable
         # 'datastore',
         'DATASTORE': os.getenv('DEFAULT_BACKEND_DATASTORE', ''),
+        'PG_GEOGIG': False,
         'TIMEOUT': int(os.getenv('OGC_REQUEST_TIMEOUT', '5')),
         'MAX_RETRIES': int(os.getenv('OGC_REQUEST_MAX_RETRIES', '5')),
         'BACKOFF_FACTOR': float(os.getenv('OGC_REQUEST_BACKOFF_FACTOR', '0.3')),
@@ -817,6 +840,7 @@ UPLOADER = {
     'OPTIONS': {
         'TIME_ENABLED': strtobool(os.getenv('TIME_ENABLED', 'False')),
         'MOSAIC_ENABLED': strtobool(os.getenv('MOSAIC_ENABLED', 'False')),
+        'GEOGIG_ENABLED': strtobool(os.getenv('GEOGIG_ENABLED', 'False')),
     },
     'SUPPORTED_CRS': [
         'EPSG:4326',
@@ -951,6 +975,10 @@ DEFAULT_MAP_CENTER = (0, 0)
 # maximum zoom is between 12 and 15 (for Google Maps, coverage varies by area)
 DEFAULT_MAP_ZOOM = 0
 
+ALT_OSM_BASEMAPS = ast.literal_eval(os.environ.get('ALT_OSM_BASEMAPS', 'False'))
+CARTODB_BASEMAPS = ast.literal_eval(os.environ.get('CARTODB_BASEMAPS', 'False'))
+STAMEN_BASEMAPS = ast.literal_eval(os.environ.get('STAMEN_BASEMAPS', 'False'))
+THUNDERFOREST_BASEMAPS = ast.literal_eval(os.environ.get('THUNDERFOREST_BASEMAPS', 'False'))
 MAPBOX_ACCESS_TOKEN = os.environ.get('MAPBOX_ACCESS_TOKEN', None)
 BING_API_KEY = os.environ.get('BING_API_KEY', None)
 GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY', None)
@@ -1242,6 +1270,15 @@ GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY = 'leaflet'  # DEPRECATED use HOOKSET inste
 GEONODE_CLIENT_HOOKSET = "geonode.client.hooksets.LeafletHookSet"
 """
 
+# To enable the MapLoom based Client enable those
+"""
+GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY = 'maploom'  # DEPRECATED use HOOKSET instead
+GEONODE_CLIENT_HOOKSET = "geonode.client.hooksets.MaploomHookSet"
+CORS_ORIGIN_WHITELIST = (
+    HOSTNAME
+)
+"""
+
 # To enable the WorldMap based Client enable those
 """
 GEONODE_CLIENT_HOOKSET = "geonode.client.hooksets.WorldMapHookSet"
@@ -1466,6 +1503,13 @@ if S3_MEDIA_ENABLED:
     MEDIAFILES_LOCATION = 'media'
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
     MEDIA_URL = "https://%s/%s/" % (AWS_S3_BUCKET_DOMAIN, MEDIAFILES_LOCATION)
+
+
+# Load additonal basemaps, see geonode/contrib/api_basemap/README.md
+try:
+    from geonode.contrib.api_basemaps import *  # flake8: noqa
+except ImportError:
+    pass
 
 # Require users to authenticate before using Geonode
 if LOCKDOWN_GEONODE:

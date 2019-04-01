@@ -3700,6 +3700,10 @@ msgstr "ভাগ"
 msgid "Ratings"
 msgstr "সৈনিকগণ"
 
+#: geonode/templates/_actions.html:20
+msgid "GeoGig"
+msgstr ""
+
 #: geonode/templates/_actions.html:23
 msgid "Exif"
 msgstr "বাহির"
